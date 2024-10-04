@@ -4,7 +4,6 @@ import java.sql.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,17 +16,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-/*
-    CREATE TABLE `USERS` (
-    `id` integer PRIMARY KEY AUTO_INCREMENT,
-    `email` varchar(255),
-    `name` varchar(255),
-    `password` varchar(255),
-    `created_at` timestamp,
-    `updated_at` timestamp
-    );
-*/
-
 @Entity
 @Getter
 @Setter
@@ -37,11 +25,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @NotNull(message = "A name must be provided")
     @NotEmpty(message = "Name must not be empty")
     @Column(nullable = false)
     private String name;
 
     @Email(message = "Invalid email")
+    @NotNull(message = "An email must be provided")
     @NotEmpty(message = "Email must not be empty")
     @Column(nullable = false, unique = true)
     private String email;
