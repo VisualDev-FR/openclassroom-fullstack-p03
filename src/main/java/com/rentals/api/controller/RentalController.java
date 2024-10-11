@@ -11,6 +11,7 @@ import com.rentals.api.model.Rental;
 import com.rentals.api.service.RentalService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 
 @RestController
 public class RentalController {
@@ -19,7 +20,7 @@ public class RentalController {
     RentalService rentalService;
 
     @PostMapping("/rentals")
-    public ResponseEntity<Object> createRental(@RequestBody Rental rental) {
+    public ResponseEntity<Object> createRental(@Valid @RequestBody Rental rental) {
 
         rental = rentalService.createRental(rental);
 
