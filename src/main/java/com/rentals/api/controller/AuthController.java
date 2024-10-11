@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,14 +35,8 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/api/auth/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody User user, BindingResult bindingResult) {
-
-        // send error response if the given user datas are not valid
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(bindingResult.getAllErrors());
-        }
+    @PostMapping("/auth/register")
+    public ResponseEntity<Object> register(@Valid @RequestBody User user) {
 
         // store the user credentials to retreive the token later
         LoginDto loginData = new LoginDto(user.getEmail(), user.getPassword());
@@ -61,11 +54,12 @@ public class AuthController {
                     .body(String.format("error: %s", e.getClass()));
         }
 
-        return getToken(loginData);
+        return login(loginData);
     }
 
-    @PostMapping("/api/auth/login")
-    public ResponseEntity<Object> getToken(@RequestBody LoginDto data) {
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<Object> login(@RequestBody LoginDto data) {
 
         var token = new UsernamePasswordAuthenticationToken(
                 data.getEmail(),
@@ -79,7 +73,7 @@ public class AuthController {
                     .body(new TokenDto(jwt));
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid username or password");
     }
 
