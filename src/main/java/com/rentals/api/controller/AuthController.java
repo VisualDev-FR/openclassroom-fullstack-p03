@@ -19,7 +19,6 @@ import com.rentals.api.service.JWTService;
 import com.rentals.api.service.UserService;
 
 import jakarta.validation.Valid;
-import lombok.var;
 
 @RestController
 public class AuthController {
