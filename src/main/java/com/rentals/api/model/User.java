@@ -24,7 +24,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class DBUser implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

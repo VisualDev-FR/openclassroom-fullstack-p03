@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rentals.api.dto.LoginDto;
 import com.rentals.api.dto.TokenDto;
-import com.rentals.api.model.DBUser;
+import com.rentals.api.model.User;
 import com.rentals.api.service.JWTService;
 import com.rentals.api.service.UserService;
 
@@ -37,7 +37,7 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody DBUser user, BindingResult bindingResult) {
+    public ResponseEntity<Object> register(@Valid @RequestBody User user, BindingResult bindingResult) {
 
         // send error response if the given user datas are not valid
         if (bindingResult.hasErrors()) {
