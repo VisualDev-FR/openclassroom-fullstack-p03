@@ -3,6 +3,7 @@ package com.rentals.api.model;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,15 +16,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class User implements UserDetails {
 
     @Id
@@ -52,6 +52,9 @@ public class User implements UserDetails {
 
     @UpdateTimestamp
     private Date updated_at;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Rental> rentals;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
