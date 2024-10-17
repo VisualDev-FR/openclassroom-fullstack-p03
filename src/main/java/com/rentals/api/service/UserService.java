@@ -1,7 +1,5 @@
 package com.rentals.api.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.rentals.api.repository.UserRepository;
+import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.model.User;
 
 import lombok.Data;
@@ -24,11 +23,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Can't find user with email: " + email));
     }
 
-    public Iterable<User> getUsers() {
+    public Iterable<User> findAll() {
         return userRepository.findAll();
     }
 
@@ -39,13 +40,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        Optional<User> user = getUserByEmail(username);
-
-        if (!user.isPresent())
-            throw new UsernameNotFoundException("user not found");
-
-        return user.get();
+        return findByEmail(username);
     }
 
 }
