@@ -16,33 +16,31 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class User implements UserDetails {
+
+    public static final int NAME_MAX_SIZE = 255;
+
+    public static final int EMAIL_MAX_SIZE = 255;
+
+    public static final int PASSWORD_MAX_SIZE = 255;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @NotNull(message = "A name must be provided")
-    @NotEmpty(message = "Name must not be empty")
-    @Column(nullable = false)
+    @Column(nullable = false, length = NAME_MAX_SIZE)
     private String name;
 
-    @Email(message = "Invalid email")
-    @NotNull(message = "An email must be provided")
-    @NotEmpty(message = "Email must not be empty")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = EMAIL_MAX_SIZE, unique = true)
     private String email;
 
-    @NotNull(message = "A password must be provided")
-    @NotEmpty(message = "Password must not be empty")
-    @Column(nullable = false)
+    @Column(nullable = false, length = PASSWORD_MAX_SIZE)
     private String password;
 
     @CreationTimestamp
@@ -54,6 +52,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "owner")
     private Set<Rental> rentals;
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

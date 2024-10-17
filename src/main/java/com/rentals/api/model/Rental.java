@@ -12,41 +12,37 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Entity
 @Data
 public class Rental {
 
+    public static final int NAME_MAX_SIZE = 255;
+
+    public static final int PICTURE_MAX_SIZE = 255;
+
+    public static final int DESC_MAX_SIZE = 2000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Integer id;
 
-    @NotNull()
-    @NotEmpty()
-    @Column(nullable = false)
+    @Column(nullable = false, length = NAME_MAX_SIZE)
     public String name;
 
-    @NotNull()
-    @NotEmpty()
     @Column(nullable = false)
     public Integer surface;
 
-    @NotNull()
-    @NotEmpty()
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     public Float price;
+
+    @Column(nullable = false, length = PICTURE_MAX_SIZE)
     public String picture;
 
-    @NotNull()
-    @NotEmpty()
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = false, length = DESC_MAX_SIZE)
     public String description;
 
-    @NotNull()
-    @NotEmpty()
     @ManyToOne()
     @JoinColumn(nullable = false, name = "owner_id")
     public User owner;
