@@ -1,10 +1,9 @@
 package com.rentals.api.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.dto.RentalDto;
 import com.rentals.api.model.Rental;
 import com.rentals.api.model.User;
@@ -27,8 +26,23 @@ public class RentalService {
         return rentalRepository.save(rental);
     }
 
-    public Optional<Rental> getRentalByID(Integer id) {
-        return rentalRepository.findById(id);
+    public Rental getRentalByID(Integer id) {
+        return rentalRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rental not found with id " + id));
+    }
+
+    public Rental updateRental(Integer id, RentalDto dto) {
+
+        Rental rental = getRentalByID(id);
+
+        rental.setName(dto.getName());
+        rental.setSurface(dto.getSurface());
+        rental.setPrice(dto.getPrice());
+        rental.setPicture(dto.getPicture());
+        rental.setDescription(dto.getDescription());
+
+        return rentalRepository.save(rental);
     }
 
     public Rental mapToRental(RentalDto dto, User owner) {

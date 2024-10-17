@@ -1,6 +1,5 @@
 package com.rentals.api.controller;
 
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,18 +53,22 @@ public class RentalController {
     @GetMapping("/rentals/{id}")
     public ResponseEntity<Object> rentalByID(@PathVariable Integer id) {
 
-        Optional<Rental> rental = rentalService.getRentalByID(id);
-
-        if (!rental.isPresent()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("{}");
-        }
-
-        RentalDto dto = rentalService.mapToRentalDTO(rental.get());
+        Rental rental = rentalService.getRentalByID(id);
+        RentalDto dto = rentalService.mapToRentalDTO(rental);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(dto);
+    }
+
+    @PutMapping("/rentals/{id}")
+    public ResponseEntity<Object> updateRental(@PathVariable Integer id, @Valid @RequestBody RentalDto rentalData) {
+
+        Rental updatedRental = rentalService.updateRental(id, rentalData);
+        RentalDto result = rentalService.mapToRentalDTO(updatedRental);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
     }
 }

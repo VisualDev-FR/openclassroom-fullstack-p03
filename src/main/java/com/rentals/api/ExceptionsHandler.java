@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
+import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.dto.ExceptionDto;
 
 @ControllerAdvice
@@ -33,5 +34,12 @@ public class ExceptionsHandler {
         return new ResponseEntity<>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFoundException(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e),
+                HttpStatus.NOT_FOUND);
     }
 }
