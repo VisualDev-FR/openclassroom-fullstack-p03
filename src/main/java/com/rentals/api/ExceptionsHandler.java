@@ -2,6 +2,7 @@ package com.rentals.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -41,5 +42,12 @@ public class ExceptionsHandler {
         return new ResponseEntity<>(
                 new ExceptionDto(e),
                 HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e),
+                HttpStatus.BAD_REQUEST);
     }
 }

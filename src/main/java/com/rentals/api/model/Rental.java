@@ -1,6 +1,7 @@
 package com.rentals.api.model;
 
 import java.sql.Date;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -59,4 +61,7 @@ public class Rental {
 
     @UpdateTimestamp
     public Date updated_at;
+
+    @OneToMany(mappedBy = "rental")
+    private Set<Message> messages;
 }

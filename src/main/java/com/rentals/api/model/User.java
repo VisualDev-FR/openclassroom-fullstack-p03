@@ -53,6 +53,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private Set<Rental> rentals;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Message> messages;
+
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
