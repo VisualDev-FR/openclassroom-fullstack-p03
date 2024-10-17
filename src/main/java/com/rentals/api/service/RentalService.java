@@ -1,5 +1,7 @@
 package com.rentals.api.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,10 @@ public class RentalService {
 
     public Rental createRental(Rental rental) {
         return rentalRepository.save(rental);
+    }
+
+    public Optional<Rental> getRentalByID(Integer id) {
+        return rentalRepository.findById(id);
     }
 
     public Rental mapToRental(RentalDto dto, User owner) {
