@@ -5,8 +5,14 @@ import com.rentals.api.model.Rental;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
 public class RentalDto {
+
+    public Integer id;
 
     @NotNull()
     @NotEmpty()
@@ -14,18 +20,22 @@ public class RentalDto {
     public String name;
 
     @NotNull()
-    @NotEmpty()
     public Integer surface;
 
     @NotNull()
-    @NotEmpty()
     public Float price;
+
+    @Size(max = Rental.PICTURE_MAX_SIZE)
+    public String picture;
 
     @NotNull()
     @NotEmpty()
     @Size(max = Rental.DESC_MAX_SIZE)
     public String description;
 
-    @Size(max = Rental.PICTURE_MAX_SIZE)
-    public String picture;
+    public String created_at;
+
+    public String updated_at;
+
+    public Integer owner_id;
 }

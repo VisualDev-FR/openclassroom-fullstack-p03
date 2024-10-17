@@ -1,16 +1,23 @@
 package com.rentals.api.controller;
 
+import java.util.List;
+import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rentals.api.dto.RentalDto;
 import com.rentals.api.model.Rental;
+import com.rentals.api.model.User;
 import com.rentals.api.service.RentalService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 
 @RestController
@@ -20,17 +27,26 @@ public class RentalController {
     RentalService rentalService;
 
     @PostMapping("/rentals")
-    public ResponseEntity<Object> createRental(@Valid @RequestBody Rental rental) {
+    public ResponseEntity<RentalDto> createRental(@Valid @RequestBody RentalDto rentalDatas) {
 
-        rental = rentalService.createRental(rental);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Rental createdRental = rentalService.mapToRental(rentalDatas, currentUser);
+
+        createdRental = rentalService.createRental(createdRental);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(rental);
+                .body(rentalService.mapToRentalDTO(createdRental));
     }
 
     @GetMapping("/rentals")
     public ResponseEntity<Object> getAllRentals() {
+
+        List<RentalDto> rentals = StreamSupport.stream(rentalService.getRentals().spliterator(), false)
+                .map(rentalService::mapToRentalDTO)
+                .collect(Collectors.toList());
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(rentalService.getRentals());
+                .body(rentals);
     }
 }

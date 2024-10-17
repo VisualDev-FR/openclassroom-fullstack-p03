@@ -12,10 +12,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Rental {
 
     public static final int NAME_MAX_SIZE = 255;
@@ -44,7 +50,7 @@ public class Rental {
     public String description;
 
     @ManyToOne()
-    @JoinColumn(nullable = false, name = "owner_id")
+    @JoinColumn(nullable = false, name = "user_id")
     public User owner;
 
     @CreationTimestamp
