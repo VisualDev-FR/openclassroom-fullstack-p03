@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rentals.api.dto.LoginDto;
 import com.rentals.api.dto.RegisterDto;
 import com.rentals.api.dto.TokenDto;
+import com.rentals.api.dto.UserDto;
 import com.rentals.api.model.User;
 import com.rentals.api.service.JWTService;
 import com.rentals.api.service.UserService;
@@ -67,4 +70,30 @@ public class AuthController {
                 .body("Invalid username or password");
     }
 
+    @GetMapping("/auth/me")
+    public ResponseEntity<Object> me() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof User) {
+                User user = (User) principal;
+
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(new UserDto(
+                                user.getId(),
+                                user.getName(),
+                                user.getEmail(),
+                                user.getCreated_at().toString(),
+                                user.getUpdated_at().toString()));
+            }
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new Object());
+    }
 }
