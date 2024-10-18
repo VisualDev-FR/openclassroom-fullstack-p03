@@ -68,8 +68,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
+            return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // https://www.baeldung.com/spring-exclude-filter
+        String path = request.getRequestURI();
+
+        return path.equals("/api/auth/login") || path.equals("/api/auth/register");
     }
 }
