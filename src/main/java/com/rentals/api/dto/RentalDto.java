@@ -1,5 +1,7 @@
 package com.rentals.api.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.rentals.api.model.Rental;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -25,8 +27,10 @@ public class RentalDto {
     @NotNull()
     public Float price;
 
-    @Size(max = Rental.PICTURE_MAX_SIZE)
-    public String picture;
+    public MultipartFile picture;
+
+    @Size(max = Rental.IMG_URL_MAX_SIZE)
+    public String imgURL;
 
     @NotNull()
     @NotEmpty()

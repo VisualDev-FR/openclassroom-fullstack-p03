@@ -1,3 +1,8 @@
+# setup database
+
+* setup mySQL
+* init database my springJPA
+
 # Run the api
 
 ```

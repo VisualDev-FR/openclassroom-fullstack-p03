@@ -1,5 +1,7 @@
 package com.rentals.api.service;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +20,21 @@ public class RentalService {
     @Autowired
     RentalRepository rentalRepository;
 
+    @Autowired
+    FileStorageService fileStorageService;
+
     public Iterable<Rental> getRentals() {
         return rentalRepository.findAll();
     }
 
-    public Rental createRental(Rental rental) {
+    public Rental createRental(RentalDto dto, User owner) throws IOException {
+
+        if (dto.picture != null && !dto.picture.isEmpty()) {
+            dto.imgURL = fileStorageService.storeFile(dto.picture);
+        }
+
+        Rental rental = mapToRental(dto, owner);
+
         return rentalRepository.save(rental);
     }
 
@@ -32,14 +44,18 @@ public class RentalService {
                 .orElseThrow(() -> new ResourceNotFoundException("Rental not found with id " + id));
     }
 
-    public Rental updateRental(Integer id, RentalDto dto) {
+    public Rental updateRental(Integer id, RentalDto dto) throws IOException {
 
         Rental rental = getRentalByID(id);
+
+        if (dto.picture != null && !dto.picture.isEmpty()) {
+            dto.imgURL = fileStorageService.storeFile(dto.picture);
+        }
 
         rental.setName(dto.getName());
         rental.setSurface(dto.getSurface());
         rental.setPrice(dto.getPrice());
-        rental.setPicture(dto.getPicture());
+        rental.setPicture(dto.getImgURL());
         rental.setDescription(dto.getDescription());
 
         return rentalRepository.save(rental);
@@ -51,7 +67,7 @@ public class RentalService {
                 .name(dto.getName())
                 .surface(dto.getSurface())
                 .price(dto.getPrice())
-                .picture(dto.getPicture())
+                .picture(dto.getImgURL())
                 .description(dto.getDescription())
                 .owner(owner)
                 .build();
@@ -64,7 +80,7 @@ public class RentalService {
                 .name(rental.getName())
                 .surface(rental.getSurface())
                 .price(rental.getPrice())
-                .picture(rental.getPicture())
+                .imgURL(rental.getPicture())
                 .description(rental.getDescription())
                 .owner_id(rental.getOwner().getId())
                 .created_at(rental.getCreated_at().toString())

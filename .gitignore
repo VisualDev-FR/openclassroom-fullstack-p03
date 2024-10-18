@@ -34,3 +34,6 @@ build/
 
 ### draw.io ###
 .$*
+
+### files upload dir ###
+/files/*

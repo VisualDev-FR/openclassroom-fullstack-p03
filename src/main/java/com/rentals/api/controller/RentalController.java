@@ -1,5 +1,6 @@
 package com.rentals.api.controller;
 
+import java.io.IOException;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rentals.api.dto.RentalDto;
 import com.rentals.api.model.Rental;
 import com.rentals.api.model.User;
+import com.rentals.api.service.FileStorageService;
 import com.rentals.api.service.RentalService;
+import com.rentals.api.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -26,17 +30,38 @@ public class RentalController {
     @Autowired
     RentalService rentalService;
 
+    @Autowired
+    FileStorageService fileStorageService;
+
+    @Autowired
+    UserService userService;
+
     @PostMapping("/rentals")
-    public ResponseEntity<RentalDto> createRental(@Valid @RequestBody RentalDto rentalDatas) {
+    public ResponseEntity<RentalDto> createRental(@ModelAttribute("rentals") RentalDto dto) throws IOException {
 
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = (User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
-        Rental createdRental = rentalService.mapToRental(rentalDatas, currentUser);
+        RentalDto rentalDatas = RentalDto.builder()
+                .name(dto.name)
+                .surface(dto.surface)
+                .price(dto.price)
+                .description(dto.description)
+                .build();
 
-        createdRental = rentalService.createRental(createdRental);
+        if (dto.picture != null) {
+            rentalDatas.setPicture(dto.picture);
+        }
+
+        Rental createdRental = rentalService.createRental(rentalDatas, currentUser);
+        RentalDto result = rentalService.mapToRentalDTO(createdRental);
+
+        // result.setPicture(rentalDatas.picture);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(rentalService.mapToRentalDTO(createdRental));
+                .body(result);
     }
 
     @GetMapping("/rentals")
@@ -62,9 +87,10 @@ public class RentalController {
     }
 
     @PutMapping("/rentals/{id}")
-    public ResponseEntity<Object> updateRental(@PathVariable Integer id, @Valid @RequestBody RentalDto rentalData) {
+    public ResponseEntity<Object> updateRental(@PathVariable Integer id, @Valid @RequestBody RentalDto rentalDatas)
+            throws IOException {
 
-        Rental updatedRental = rentalService.updateRental(id, rentalData);
+        Rental updatedRental = rentalService.updateRental(id, rentalDatas);
         RentalDto result = rentalService.mapToRentalDTO(updatedRental);
 
         return ResponseEntity
