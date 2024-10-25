@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rentals.api.Exceptions.DuplicateUserException;
 import com.rentals.api.dto.LoginDto;
 import com.rentals.api.dto.RegisterDto;
 import com.rentals.api.dto.TokenDto;
@@ -43,6 +45,11 @@ public class AuthController {
 
         LoginDto loginData = new LoginDto(registerDatas.getEmail(), registerDatas.getPassword());
 
+        String email = loginData.getEmail();
+
+        if (userservice.userExistsByEmail(email))
+            throw new DuplicateUserException(email);
+
         userservice.createUser(new User(
                 registerDatas.getName(),
                 registerDatas.getEmail(),
@@ -58,16 +65,19 @@ public class AuthController {
                 data.getEmail(),
                 data.getPassword());
 
+        if (!userservice.userExistsByEmail(data.getEmail()))
+            throw new BadCredentialsException("Bad credentials");
+
         Authentication authentication = authenticationManager.authenticate(token);
 
-        if (authentication.isAuthenticated()) {
-            String jwt = jwtService.generateToken(data.getEmail());
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new TokenDto(jwt));
-        }
+        if (!authentication.isAuthenticated())
+            throw new BadCredentialsException("Bad credentials");
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid username or password");
+        String jwt = jwtService.generateToken(data.getEmail());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new TokenDto(jwt));
     }
 
     @GetMapping("/auth/me")

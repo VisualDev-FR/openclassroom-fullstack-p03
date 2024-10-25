@@ -46,6 +46,15 @@ public class UserService implements UserDetailsService {
                 .getPrincipal();
     }
 
+    public Boolean userExistsByEmail(String email) {
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElse(null);
+
+        return user != null;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return findByEmail(username);

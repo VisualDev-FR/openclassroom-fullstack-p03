@@ -2,12 +2,14 @@ package com.rentals.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
+import com.rentals.api.Exceptions.DuplicateUserException;
 import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.dto.ExceptionDto;
 
@@ -23,11 +25,11 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler(io.jsonwebtoken.JwtException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<Object> handleJwtException(Exception e, WebRequest request) {
         return new ResponseEntity<Object>(
                 new ExceptionDto("invalid token", e.getClass().toString()),
-                HttpStatus.FORBIDDEN);
+                HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(jakarta.validation.ValidationException.class)
@@ -49,5 +51,19 @@ public class ExceptionsHandler {
         return new ResponseEntity<>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<Object> handleDuplicateUserException(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleAuthenticationException(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto("Bad credentials", e.getClass().getName()),
+                HttpStatus.UNAUTHORIZED);
     }
 }
