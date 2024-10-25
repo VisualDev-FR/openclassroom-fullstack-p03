@@ -24,12 +24,11 @@ import com.rentals.api.service.JWTService;
 import com.rentals.api.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@Tag(name = "Auth", description = "The Auth API. Contains all the operations that can be performed a Auth.")
+@Tag(name = "Authentication API", description = "Contains all the operations that can be performed a Auth + the endpoints to retreive an user from his id.")
 @RestController
 public class AuthController {
 
@@ -46,6 +45,7 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
+    @Operation(summary = "Register a user, by provinding name, email and password.")
     @PostMapping("/auth/register")
     public ResponseEntity<Object> register(@Valid @RequestBody RegisterDto registerDatas) {
 
@@ -64,10 +64,9 @@ public class AuthController {
         return login(loginData);
     }
 
-    @Operation(summary = "Login a user")
+    @Operation(summary = "Login a user with email and password")
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> login(
-            @Parameter(description = "username + password payload") @RequestBody LoginDto data) {
+    public ResponseEntity<Object> login(@RequestBody LoginDto data) {
 
         var token = new UsernamePasswordAuthenticationToken(
                 data.getEmail(),
@@ -88,7 +87,9 @@ public class AuthController {
                 .body(new TokenDto(jwt));
     }
 
+    @Operation(summary = "Retreive the authenticated user, from the jwt sent in the header request.")
     @GetMapping("/auth/me")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> me() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -111,10 +112,11 @@ public class AuthController {
         }
 
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new Object());
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Authentication is required to access this endpoint.");
     }
 
+    @Operation(summary = "Retreive an user from his unique id")
     @GetMapping("/user/{id}")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getUser(@PathVariable Integer id) {

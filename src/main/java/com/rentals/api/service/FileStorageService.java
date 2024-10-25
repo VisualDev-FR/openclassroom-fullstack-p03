@@ -18,9 +18,7 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) throws IOException {
 
-        String fileName = String.format("%s_%s",
-                UUID.randomUUID().toString(),
-                file.getOriginalFilename());
+        String fileName = UUID.randomUUID().toString();
 
         Path filePath = Paths.get(uploadDir, fileName);
 

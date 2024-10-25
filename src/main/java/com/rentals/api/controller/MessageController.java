@@ -15,11 +15,14 @@ import com.rentals.api.service.MessageService;
 import com.rentals.api.service.RentalService;
 import com.rentals.api.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "Messages API", description = "Contains all operations that handle messages")
 public class MessageController {
 
     @Autowired
@@ -31,6 +34,7 @@ public class MessageController {
     @Autowired
     private RentalService rentalService;
 
+    @Operation(summary = "Create a new message related to a rental and sent from an users")
     @PostMapping("/messages")
     public ResponseEntity<MessageDto> createMessage(@Valid @RequestBody MessageDto messageData) {
 

@@ -24,10 +24,11 @@ import com.rentals.api.service.FileStorageService;
 import com.rentals.api.service.RentalService;
 import com.rentals.api.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Rental", description = "TODOC: rental controller")
+@Tag(name = "Rentals API", description = "Contains all operations to create, retreive and update a rental.")
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class RentalController {
@@ -41,6 +42,7 @@ public class RentalController {
     @Autowired
     UserService userService;
 
+    @Operation(summary = "Create a new rental")
     @PostMapping("/rentals")
     public ResponseEntity<RentalResponse> createRental(@ModelAttribute("rentals") RentalDto dto) throws IOException {
 
@@ -56,6 +58,7 @@ public class RentalController {
                 .body(result);
     }
 
+    @Operation(summary = "Retreive all rentals")
     @GetMapping("/rentals")
     public ResponseEntity<RentalsResponse> getAllRentals() {
 
@@ -71,6 +74,7 @@ public class RentalController {
                 .body(response);
     }
 
+    @Operation(summary = "Retreive a rental from his unique id")
     @GetMapping("/rentals/{id}")
     public ResponseEntity<RentalResponse> rentalByID(@PathVariable Integer id) {
 
@@ -82,6 +86,7 @@ public class RentalController {
                 .body(dto);
     }
 
+    @Operation(summary = "Update an existing rental from his unique id, and from the updated datas.")
     @PutMapping("/rentals/{id}")
     public ResponseEntity<RentalResponse> updateRental(
             @PathVariable Integer id,

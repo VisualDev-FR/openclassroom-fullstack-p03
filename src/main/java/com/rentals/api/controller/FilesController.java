@@ -11,17 +11,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rentals.api.Exceptions.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@Tag(name = "Images API", description = "Contains operations to download images. (the upload is done througth the Rental API)")
 public class FilesController {
 
     private final Path imageLocation = Paths.get("files");
 
+    @Operation(summary = "Public endpoint to dowload an image, from his unique id")
     @GetMapping("/files/{imageName}")
-    public ResponseEntity<Resource> getImage(@PathVariable String imageName) throws MalformedURLException {
+    public ResponseEntity<Resource> getImage(
+            @Parameter(description = "the filename with the extension of the target image", example = "filename.png") @PathVariable String imageName)
+            throws MalformedURLException {
 
         Path filePath = imageLocation.resolve(imageName).normalize();
         Resource resource = new UrlResource(filePath.toUri());
