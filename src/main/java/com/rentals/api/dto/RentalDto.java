@@ -27,10 +27,10 @@ public class RentalDto {
     @NotNull()
     public Float price;
 
-    public MultipartFile picture;
+    public MultipartFile pictureContent;
 
     @Size(max = Rental.IMG_URL_MAX_SIZE)
-    public String imgURL;
+    public String picture;
 
     @NotNull()
     @NotEmpty()

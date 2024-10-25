@@ -42,21 +42,9 @@ public class RentalController {
                 .getAuthentication()
                 .getPrincipal();
 
-        RentalDto rentalDatas = RentalDto.builder()
-                .name(dto.name)
-                .surface(dto.surface)
-                .price(dto.price)
-                .description(dto.description)
-                .build();
 
-        if (dto.picture != null) {
-            rentalDatas.setPicture(dto.picture);
-        }
-
-        Rental createdRental = rentalService.createRental(rentalDatas, currentUser);
+        Rental createdRental = rentalService.createRental(dto, currentUser);
         RentalDto result = rentalService.mapToRentalDTO(createdRental);
-
-        // result.setPicture(rentalDatas.picture);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(result);

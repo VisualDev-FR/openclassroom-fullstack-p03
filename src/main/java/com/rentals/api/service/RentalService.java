@@ -29,8 +29,8 @@ public class RentalService {
 
     public Rental createRental(RentalDto dto, User owner) throws IOException {
 
-        if (dto.picture != null && !dto.picture.isEmpty()) {
-            dto.imgURL = fileStorageService.storeFile(dto.picture);
+        if (dto.pictureContent != null && !dto.pictureContent.isEmpty()) {
+            dto.picture = fileStorageService.storeFile(dto.pictureContent);
         }
 
         Rental rental = mapToRental(dto, owner);
@@ -48,14 +48,14 @@ public class RentalService {
 
         Rental rental = getRentalByID(id);
 
-        if (dto.picture != null && !dto.picture.isEmpty()) {
-            dto.imgURL = fileStorageService.storeFile(dto.picture);
+        if (dto.getPicture() != null && !dto.picture.isEmpty()) {
+            dto.setPicture(fileStorageService.storeFile(dto.pictureContent));
         }
 
         rental.setName(dto.getName());
         rental.setSurface(dto.getSurface());
         rental.setPrice(dto.getPrice());
-        rental.setPicture(dto.getImgURL());
+        rental.setPicture(dto.getPicture());
         rental.setDescription(dto.getDescription());
 
         return rentalRepository.save(rental);
@@ -67,7 +67,7 @@ public class RentalService {
                 .name(dto.getName())
                 .surface(dto.getSurface())
                 .price(dto.getPrice())
-                .picture(dto.getImgURL())
+                .picture(dto.getPicture())
                 .description(dto.getDescription())
                 .owner(owner)
                 .build();
@@ -80,7 +80,7 @@ public class RentalService {
                 .name(rental.getName())
                 .surface(rental.getSurface())
                 .price(rental.getPrice())
-                .imgURL(rental.getPicture())
+                .picture(rental.getPicture())
                 .description(rental.getDescription())
                 .owner_id(rental.getOwner().getId())
                 .created_at(rental.getCreated_at().toString())

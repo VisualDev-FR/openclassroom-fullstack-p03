@@ -45,7 +45,7 @@ public class Rental {
     @Column(nullable = false)
     public Float price;
 
-    @Column(nullable = false, length = IMG_URL_MAX_SIZE)
+    @Column(length = IMG_URL_MAX_SIZE)
     public String picture;
 
     @Column(nullable = false, length = DESC_MAX_SIZE)
