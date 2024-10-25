@@ -1,14 +1,38 @@
-# setup database
+# OpenClassroom Fullstack P03 - Implement a REST API with Spring Boot
 
-* setup mySQL
-* init database my springJPA
+## Project Overview
 
-# Run the api
+This API is designed to manage rentals with functionalities for CRUD operations utilizing Java, Spring Boot and MySQL.
 
+## Requirements
+
+* Java 17+
+* Maven
+* MySQL for database setup
+
+## Setup
+
+1. Clone the repository.
+2. Install dependencies with Maven:
+
+```bash
+mvn install
 ```
+2. Configure the database settings in [application.properties](./src/main/resources/application.properties):
+
+```ini
+# mySQLConfiguration
+spring.datasource.url=jdbc:mysql://localhost:3306/<your_db_name>
+spring.datasource.username=<your_db_username>
+spring.datasource.password=<your_db_password>
+```
+
+3. Initialize the database using Spring JPA by running the local server:
+
+```bash
 mvn spring-boot:run
 ```
 
-# Swagger
+## API Documentation
 
-first run the server, then go to [localhost:9000/api/swagger-ui.html](http://localhost:9000/api/swagger-ui.html)
+Access Swagger after starting the server at [localhost:9000/api/swagger-ui.html](http://localhost:9000/api/swagger-ui.html)
