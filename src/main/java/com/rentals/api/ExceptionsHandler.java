@@ -1,5 +1,6 @@
 package com.rentals.api;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -35,6 +36,13 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(jakarta.validation.ValidationException.class)
     public ResponseEntity<Object> handleConstraintViolation(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(Exception e, WebRequest request) {
         return new ResponseEntity<>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
