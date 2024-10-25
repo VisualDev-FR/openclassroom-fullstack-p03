@@ -20,7 +20,10 @@ It is designed to provide datas to an Angular web application which is available
 ```bash
 mvn install
 ```
-2. Configure the database settings in [application.properties](./src/main/resources/application.properties):
+
+3. Create an empty database in MySQL, and grant a user the necessary rights to access and use that database.
+
+4. Configure the database settings in [application.properties](./src/main/resources/application.properties):
 
 ```ini
 # mySQLConfiguration
@@ -29,7 +32,7 @@ spring.datasource.username=<your_db_username>
 spring.datasource.password=<your_db_password>
 ```
 
-3. Initialize the database using Spring JPA by running the local server:
+5. Initialize the database using Spring JPA by running the local server:
 
 ```bash
 mvn spring-boot:run
