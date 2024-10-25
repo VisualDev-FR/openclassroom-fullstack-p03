@@ -4,6 +4,8 @@
 
 This API is designed to manage rentals with functionalities for CRUD operations utilizing Java, Spring Boot and MySQL.
 
+It is designed to provide datas to an Angular web application which is available on [this github repo](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring)
+
 ## Requirements
 
 * Java 17+
