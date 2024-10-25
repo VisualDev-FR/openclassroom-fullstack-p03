@@ -6,13 +6,13 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rentals.api.dto.RentalDto;
@@ -21,8 +21,6 @@ import com.rentals.api.model.User;
 import com.rentals.api.service.FileStorageService;
 import com.rentals.api.service.RentalService;
 import com.rentals.api.service.UserService;
-
-import jakarta.validation.Valid;
 
 @RestController
 public class RentalController {
@@ -87,8 +85,15 @@ public class RentalController {
     }
 
     @PutMapping("/rentals/{id}")
-    public ResponseEntity<Object> updateRental(@PathVariable Integer id, @Valid @RequestBody RentalDto rentalDatas)
-            throws IOException {
+    public ResponseEntity<Object> updateRental(
+            @PathVariable Integer id,
+            @ModelAttribute("rentals") RentalDto rentalDatas) throws IOException {
+
+        Rental rental = rentalService.getRentalByID(id);
+        User currentUser = userService.getCurrentUser();
+
+        if (rental.owner.getId() != currentUser.getId())
+            throw new AccessDeniedException("You are not allowed to update rental " + id);
 
         Rental updatedRental = rentalService.updateRental(id, rentalDatas);
         RentalDto result = rentalService.mapToRentalDTO(updatedRental);

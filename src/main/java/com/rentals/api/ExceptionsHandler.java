@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -73,6 +74,13 @@ public class ExceptionsHandler {
     public ResponseEntity<Object> handleAuthenticationException(Exception e, WebRequest request) {
         return new ResponseEntity<>(
                 new ExceptionDto("Bad credentials", e.getClass().getName()),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e),
                 HttpStatus.UNAUTHORIZED);
     }
 
