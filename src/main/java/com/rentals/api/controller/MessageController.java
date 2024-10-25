@@ -15,9 +15,11 @@ import com.rentals.api.service.MessageService;
 import com.rentals.api.service.RentalService;
 import com.rentals.api.service.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 public class MessageController {
 
     @Autowired

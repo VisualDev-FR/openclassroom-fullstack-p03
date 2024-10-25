@@ -16,13 +16,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rentals.api.dto.RentalDto;
+import com.rentals.api.dto.RentalResponse;
+import com.rentals.api.dto.RentalsResponse;
 import com.rentals.api.model.Rental;
 import com.rentals.api.model.User;
 import com.rentals.api.service.FileStorageService;
 import com.rentals.api.service.RentalService;
 import com.rentals.api.service.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Rental", description = "TODOC: rental controller")
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 public class RentalController {
 
     @Autowired
@@ -35,37 +42,40 @@ public class RentalController {
     UserService userService;
 
     @PostMapping("/rentals")
-    public ResponseEntity<RentalDto> createRental(@ModelAttribute("rentals") RentalDto dto) throws IOException {
+    public ResponseEntity<RentalResponse> createRental(@ModelAttribute("rentals") RentalDto dto) throws IOException {
 
         User currentUser = (User) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
 
-
         Rental createdRental = rentalService.createRental(dto, currentUser);
-        RentalDto result = rentalService.mapToRentalDTO(createdRental);
+        RentalResponse result = rentalService.mapToRentalResponse(createdRental);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(result);
     }
 
     @GetMapping("/rentals")
-    public ResponseEntity<RentalDto[]> getAllRentals() {
+    public ResponseEntity<RentalsResponse> getAllRentals() {
 
-        RentalDto[] rentals = StreamSupport.stream(rentalService.getRentals().spliterator(), false)
-                .map(rentalService::mapToRentalDTO)
-                .toArray(RentalDto[]::new);
+        RentalResponse[] rentals = StreamSupport.stream(rentalService.getRentals().spliterator(), false)
+                .map(rentalService::mapToRentalResponse)
+                .toArray(RentalResponse[]::new);
+
+        RentalsResponse response = RentalsResponse.builder()
+                .rentals(rentals)
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(rentals);
+                .body(response);
     }
 
     @GetMapping("/rentals/{id}")
-    public ResponseEntity<Object> rentalByID(@PathVariable Integer id) {
+    public ResponseEntity<RentalResponse> rentalByID(@PathVariable Integer id) {
 
         Rental rental = rentalService.getRentalByID(id);
-        RentalDto dto = rentalService.mapToRentalDTO(rental);
+        RentalResponse dto = rentalService.mapToRentalResponse(rental);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -73,7 +83,7 @@ public class RentalController {
     }
 
     @PutMapping("/rentals/{id}")
-    public ResponseEntity<Object> updateRental(
+    public ResponseEntity<RentalResponse> updateRental(
             @PathVariable Integer id,
             @ModelAttribute("rentals") RentalDto rentalDatas) throws IOException {
 
@@ -84,7 +94,7 @@ public class RentalController {
             throw new AccessDeniedException("You are not allowed to update rental " + id);
 
         Rental updatedRental = rentalService.updateRental(id, rentalDatas);
-        RentalDto result = rentalService.mapToRentalDTO(updatedRental);
+        RentalResponse result = rentalService.mapToRentalResponse(updatedRental);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.dto.RentalDto;
+import com.rentals.api.dto.RentalResponse;
 import com.rentals.api.model.Rental;
 import com.rentals.api.model.User;
 import com.rentals.api.repository.RentalRepository;
@@ -29,11 +30,13 @@ public class RentalService {
 
     public Rental createRental(RentalDto dto, User owner) throws IOException {
 
-        if (dto.pictureContent != null && !dto.pictureContent.isEmpty()) {
-            dto.picture = fileStorageService.storeFile(dto.pictureContent);
+        String pictureUrl = null;
+
+        if (dto.picture != null && !dto.picture.isEmpty()) {
+            pictureUrl = fileStorageService.storeFile(dto.picture);
         }
 
-        Rental rental = mapToRental(dto, owner);
+        Rental rental = mapToRental(dto, owner, pictureUrl);
 
         return rentalRepository.save(rental);
     }
@@ -49,33 +52,33 @@ public class RentalService {
         Rental rental = getRentalByID(id);
 
         if (dto.getPicture() != null && !dto.picture.isEmpty()) {
-            dto.setPicture(fileStorageService.storeFile(dto.pictureContent));
+            String pictureUrl = fileStorageService.storeFile(dto.picture);
+            rental.setPicture(pictureUrl);
         }
 
         rental.setName(dto.getName());
         rental.setSurface(dto.getSurface());
         rental.setPrice(dto.getPrice());
-        rental.setPicture(dto.getPicture());
         rental.setDescription(dto.getDescription());
 
         return rentalRepository.save(rental);
     }
 
-    public Rental mapToRental(RentalDto dto, User owner) {
+    public Rental mapToRental(RentalDto dto, User owner, String pictureUrl) {
 
         return Rental.builder()
                 .name(dto.getName())
                 .surface(dto.getSurface())
                 .price(dto.getPrice())
-                .picture(dto.getPicture())
+                .picture(pictureUrl)
                 .description(dto.getDescription())
                 .owner(owner)
                 .build();
     }
 
-    public RentalDto mapToRentalDTO(Rental rental) {
+    public RentalResponse mapToRentalResponse(Rental rental) {
 
-        return RentalDto.builder()
+        return RentalResponse.builder()
                 .id(rental.getId())
                 .name(rental.getName())
                 .surface(rental.getSurface())

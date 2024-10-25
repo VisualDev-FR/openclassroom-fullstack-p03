@@ -23,8 +23,13 @@ import com.rentals.api.model.User;
 import com.rentals.api.service.JWTService;
 import com.rentals.api.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Auth", description = "The Auth API. Contains all the operations that can be performed a Auth.")
 @RestController
 public class AuthController {
 
@@ -59,8 +64,10 @@ public class AuthController {
         return login(loginData);
     }
 
+    @Operation(summary = "Login a user")
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> login(@RequestBody LoginDto data) {
+    public ResponseEntity<Object> login(
+            @Parameter(description = "username + password payload") @RequestBody LoginDto data) {
 
         var token = new UsernamePasswordAuthenticationToken(
                 data.getEmail(),
@@ -109,6 +116,7 @@ public class AuthController {
     }
 
     @GetMapping("/user/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getUser(@PathVariable Integer id) {
 
         User currentUser = userservice.getCurrentUser();
