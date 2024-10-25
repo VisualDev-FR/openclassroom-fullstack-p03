@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -105,5 +106,23 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new Object());
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Object> getUser(@PathVariable Integer id) {
+
+        User currentUser = userservice.getCurrentUser();
+
+        UserDto userDTO = UserDto.builder()
+                .id(currentUser.getId())
+                .name(currentUser.getName())
+                .email(currentUser.getEmail())
+                .created_at(currentUser.getCreated_at().toString())
+                .updated_at(currentUser.getUpdated_at().toString())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userDTO);
     }
 }
