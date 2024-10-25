@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Thomas\",\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"password\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Thomas\",\r\n    \"email\": \"test@example.comm\",\r\n    \"password\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"teeestt@example.com\",\r\n    \"password\": \"password\"\r\n}",
+							"raw": "{\r\n    \"name\": \"missing name\",\r\n    \"email\": \"test@example.com\"\r\n    // \"password\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,11 +88,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "ferfzef",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Thomas\",\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -216,13 +226,39 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"test house 1\",\r\n    \"surface\": 432,\r\n    \"price\": 300.0,\r\n    \"picture\": \"https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg\",\r\n    \"description\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a lectus eleifend, varius massa ac, mollis tortor. Quisque ipsum nulla, faucibus ac metus a, eleifend efficitur augue. Integer vel pulvinar ipsum. Praesent mollis neque sed sagittis ultricies. Suspendisse congue ligula at justo molestie, eget cursus nulla tincidunt. Pellentesque elementum rhoncus arcu, viverra gravida turpis mattis in. Maecenas tempor elementum lorem vel ultricies. Nam tempus laoreet eros, et viverra libero tincidunt a. Nunc vel nisi vulputate, sodales massa eu, varius erat.\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "TestPicture",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "surface",
+									"value": "50",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "300",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Rental with picture",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "pictureContent",
+									"contentType": "app",
+									"type": "file",
+									"src": "rental.PNG"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{baseURL}}/rentals",
@@ -258,22 +294,48 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"test house 10\",\r\n    \"surface\": 432551561,\r\n    \"price\": 300.0,\r\n    \"picture\": \"https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg\",\r\n    \"description\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a lectus eleifend, varius massa ac, mollis tortor. Quisque ipsum nulla, faucibus ac metus a, eleifend efficitur augue. Integer vel pulvinar ipsum. Praesent mollis neque sed sagittis ultricies. Suspendisse congue ligula at justo molestie, eget cursus nulla tincidunt. Pellentesque elementum rhoncus arcu, viverra gravida turpis mattis in. Maecenas tempor elementum lorem vel ultricies. Nam tempus laoreet eros, et viverra libero tincidunt a. Nunc vel nisi vulputate, sodales massa eu, varius erat.\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "TestNoPictures",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "surface",
+									"value": "65",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "300",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Rental without picture",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "pictureContent",
+									"contentType": "app",
+									"type": "file",
+									"src": "rental.PNG"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "{{baseURL}}/rentals/304",
+							"raw": "{{baseURL}}/rentals/1",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"rentals",
-								"304"
+								"1"
 							]
 						}
 					},
@@ -346,13 +408,54 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/rentals/388",
+							"raw": "{{baseURL}}/rentals/1",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"rentals",
-								"388"
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "messages",
+			"item": [
+				{
+					"name": "create message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rental_id\": 1,\r\n    \"message\": \"coucou\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/messages",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"messages"
 							]
 						}
 					},
@@ -363,16 +466,25 @@
 		{
 			"name": "api-docs",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/v2/api-docs",
+					"raw": "{{baseURL}}/v3/api-docs",
 					"host": [
-						"localhost"
+						"{{baseURL}}"
 					],
-					"port": "8080",
 					"path": [
-						"v2",
+						"v3",
 						"api-docs"
 					]
 				}
