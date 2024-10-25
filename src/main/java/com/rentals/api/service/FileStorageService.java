@@ -27,7 +27,7 @@ public class FileStorageService {
         Files.createDirectories(filePath.getParent());
         Files.copy(file.getInputStream(), filePath);
 
-        return fileName;
+        return "/api/" + uploadDir.toString() + fileName;
     }
 
     public byte[] getFile(String fileName) throws IOException {
