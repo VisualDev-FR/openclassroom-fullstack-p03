@@ -2,6 +2,7 @@ package com.rentals.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -66,4 +67,12 @@ public class ExceptionsHandler {
                 new ExceptionDto("Bad credentials", e.getClass().getName()),
                 HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(Exception e, WebRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e),
+                HttpStatus.BAD_REQUEST);
+    }
+
 }
