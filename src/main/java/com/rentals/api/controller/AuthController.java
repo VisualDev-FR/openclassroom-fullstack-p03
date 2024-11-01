@@ -121,7 +121,7 @@ public class AuthController {
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> getUser(@PathVariable Integer id) {
 
-        User currentUser = userservice.getCurrentUser();
+        User currentUser = userservice.findByID(id);
 
         UserDto userDTO = UserDto.builder()
                 .id(currentUser.getId())

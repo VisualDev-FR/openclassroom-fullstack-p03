@@ -30,6 +30,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException("Can't find user with email: " + email));
     }
 
+    public User findByID(Integer id) {
+        return userRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Can't find user with id: " + id));
+    }
+
     public Iterable<User> findAll() {
         return userRepository.findAll();
     }
