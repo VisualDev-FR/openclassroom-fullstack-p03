@@ -12,7 +12,10 @@ It is designed to provide datas to an Angular web application which is available
 * Maven
 * MySQL for database setup
 
+
 ## Setup
+
+1. setup your secret key in env variable `${RENTAL_SECRET_KEY}`
 
 1. Clone the repository.
 2. Install dependencies with Maven:
@@ -23,14 +26,11 @@ mvn install
 
 3. Create an empty database in MySQL, and grant a user the necessary rights to access and use that database.
 
-4. Configure the database settings in [application.properties](./src/main/resources/application.properties):
+4. Configure the following env variables:
 
-```ini
-# mySQLConfiguration
-spring.datasource.url=jdbc:mysql://localhost:3306/<your_db_name>
-spring.datasource.username=<your_db_username>
-spring.datasource.password=<your_db_password>
-```
+* `${RENTAL_DB_NAME}`: the name of the configured database
+* `${RENTAL_DB_USERNAME}`: the username of the created database user
+* `${RENTAL_DB_PASSWORD}`: the password of the created database user
 
 5. Initialize the database using Spring JPA by running the local server:
 
