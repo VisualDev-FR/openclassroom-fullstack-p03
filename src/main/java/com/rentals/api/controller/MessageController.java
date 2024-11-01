@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rentals.api.dto.MessageDto;
+import com.rentals.api.mapper.MessageMapper;
 import com.rentals.api.model.Message;
 import com.rentals.api.model.Rental;
 import com.rentals.api.model.User;
@@ -34,6 +35,9 @@ public class MessageController {
     @Autowired
     private RentalService rentalService;
 
+    @Autowired
+    private MessageMapper messageMapper;
+
     @Operation(summary = "Create a new message related to a rental and sent from an users")
     @PostMapping("/messages")
     public ResponseEntity<MessageDto> createMessage(@Valid @RequestBody MessageDto messageData) {
@@ -41,10 +45,10 @@ public class MessageController {
         User currentUser = userService.getCurrentUser();
         Rental rental = rentalService.getRentalByID(messageData.getRental_id());
 
-        Message createdMessage = messageService.mapToMessage(messageData, currentUser, rental);
+        Message createdMessage = messageMapper.mapToMessage(messageData, currentUser, rental);
 
         createdMessage = messageService.createMessage(createdMessage);
-        messageData = messageService.mapToMessageDTO(createdMessage);
+        messageData = messageMapper.mapToMessageDTO(createdMessage);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

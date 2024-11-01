@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.dto.RentalDto;
-import com.rentals.api.dto.RentalResponse;
+import com.rentals.api.mapper.RentalMapper;
 import com.rentals.api.model.Rental;
 import com.rentals.api.model.User;
 import com.rentals.api.repository.RentalRepository;
@@ -19,10 +19,13 @@ import lombok.Data;
 public class RentalService {
 
     @Autowired
-    RentalRepository rentalRepository;
+    private RentalRepository rentalRepository;
 
     @Autowired
-    FileStorageService fileStorageService;
+    private FileStorageService fileStorageService;
+
+    @Autowired
+    private RentalMapper rentalMapper;
 
     public Iterable<Rental> getRentals() {
         return rentalRepository.findAll();
@@ -36,7 +39,7 @@ public class RentalService {
             pictureUrl = fileStorageService.storeFile(dto.picture);
         }
 
-        Rental rental = mapToRental(dto, owner, pictureUrl);
+        Rental rental = rentalMapper.mapToRental(dto, owner, pictureUrl);
 
         return rentalRepository.save(rental);
     }
@@ -64,30 +67,4 @@ public class RentalService {
         return rentalRepository.save(rental);
     }
 
-    public Rental mapToRental(RentalDto dto, User owner, String pictureUrl) {
-
-        return Rental.builder()
-                .name(dto.getName())
-                .surface(dto.getSurface())
-                .price(dto.getPrice())
-                .picture(pictureUrl)
-                .description(dto.getDescription())
-                .owner(owner)
-                .build();
-    }
-
-    public RentalResponse mapToRentalResponse(Rental rental) {
-
-        return RentalResponse.builder()
-                .id(rental.getId())
-                .name(rental.getName())
-                .surface(rental.getSurface())
-                .price(rental.getPrice())
-                .picture(rental.getPicture())
-                .description(rental.getDescription())
-                .owner_id(rental.getOwner().getId())
-                .created_at(rental.getCreated_at().toString())
-                .updated_at(rental.getUpdated_at().toString())
-                .build();
-    }
 }
