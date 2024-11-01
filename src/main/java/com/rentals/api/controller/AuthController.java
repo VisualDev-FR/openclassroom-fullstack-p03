@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +23,9 @@ import com.rentals.api.service.JWTService;
 import com.rentals.api.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,7 +49,8 @@ public class AuthController {
 
     @Operation(summary = "Register a user, by provinding name, email and password.")
     @PostMapping("/auth/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody RegisterDto registerDatas) {
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class)))
+    public ResponseEntity<TokenDto> register(@Valid @RequestBody RegisterDto registerDatas) {
 
         LoginDto loginData = new LoginDto(registerDatas.getEmail(), registerDatas.getPassword());
 
@@ -66,7 +69,8 @@ public class AuthController {
 
     @Operation(summary = "Login a user with email and password")
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> login(@RequestBody LoginDto data) {
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class)))
+    public ResponseEntity<TokenDto> login(@RequestBody LoginDto data) {
 
         var token = new UsernamePasswordAuthenticationToken(
                 data.getEmail(),
@@ -87,9 +91,10 @@ public class AuthController {
                 .body(new TokenDto(jwt));
     }
 
-    @Operation(summary = "Retreive the authenticated user, from the jwt sent in the header request.")
     @GetMapping("/auth/me")
     @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "Retreive the authenticated user, from the jwt sent in the header request.")
+    @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     public ResponseEntity<Object> me() {
 
         User user = userservice.getCurrentUser();

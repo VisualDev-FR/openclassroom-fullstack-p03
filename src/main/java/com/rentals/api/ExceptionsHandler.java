@@ -16,11 +16,16 @@ import com.rentals.api.Exceptions.DuplicateUserException;
 import com.rentals.api.Exceptions.ResourceNotFoundException;
 import com.rentals.api.dto.ExceptionDto;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @ControllerAdvice
 public class ExceptionsHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ApiResponse(responseCode = "500", description = "Global Exception handler", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDto.class)))
     public ResponseEntity<Object> handleGlobalException(Exception e, WebRequest request) {
         return new ResponseEntity<>(
                 new ExceptionDto(e),
@@ -29,6 +34,7 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(io.jsonwebtoken.JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ApiResponse(responseCode = "401", description = "Unauthorized - The bearer token is not valid or is expired.", content = @Content())
     public ResponseEntity<Object> handleJwtException(Exception e, WebRequest request) {
         return new ResponseEntity<Object>(
                 new ExceptionDto("invalid token", e.getClass().toString()),

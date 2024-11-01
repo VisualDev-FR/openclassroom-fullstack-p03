@@ -34,4 +34,5 @@ public class SwaggerConfig {
                         .description("project chatop api Wiki Documentation")
                         .url("https://springshop.wiki.github.org/docs"));
     }
+
 }
