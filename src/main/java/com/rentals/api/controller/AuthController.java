@@ -47,14 +47,20 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
+    private ResponseEntity<TokenDto> getToken(String email) {
+        String jwt = jwtService.generateToken(email);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new TokenDto(jwt));
+    }
+
     @Operation(summary = "Register a user, by provinding name, email and password.")
     @PostMapping("/auth/register")
     @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class)))
     public ResponseEntity<TokenDto> register(@Valid @RequestBody RegisterDto registerDatas) {
 
-        LoginDto loginData = new LoginDto(registerDatas.getEmail(), registerDatas.getPassword());
-
-        String email = loginData.getEmail();
+        String email = registerDatas.getEmail();
 
         if (userservice.userExistsByEmail(email))
             throw new DuplicateUserException(email);
@@ -64,7 +70,7 @@ public class AuthController {
                 registerDatas.getEmail(),
                 registerDatas.getPassword()));
 
-        return login(loginData);
+        return getToken(email);
     }
 
     @Operation(summary = "Login a user with email and password")
@@ -72,30 +78,26 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class)))
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto data) {
 
-        var token = new UsernamePasswordAuthenticationToken(
+        var credentials = new UsernamePasswordAuthenticationToken(
                 data.getEmail(),
                 data.getPassword());
 
         if (!userservice.userExistsByEmail(data.getEmail()))
             throw new BadCredentialsException("Bad credentials");
 
-        Authentication authentication = authenticationManager.authenticate(token);
+        Authentication authentication = authenticationManager.authenticate(credentials);
 
         if (!authentication.isAuthenticated())
             throw new BadCredentialsException("Bad credentials");
 
-        String jwt = jwtService.generateToken(data.getEmail());
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new TokenDto(jwt));
+        return getToken(data.getEmail());
     }
 
     @GetMapping("/auth/me")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Retreive the authenticated user, from the jwt sent in the header request.")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
-    public ResponseEntity<Object> me() {
+    public ResponseEntity<UserDto> me() {
 
         User user = userservice.getCurrentUser();
 
@@ -112,7 +114,7 @@ public class AuthController {
     @Operation(summary = "Retreive an user from his unique id")
     @GetMapping("/user/{id}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Object> getUser(@PathVariable Integer id) {
+    public ResponseEntity<UserDto> getUser(@PathVariable Integer id) {
 
         User currentUser = userservice.findByID(id);
 
