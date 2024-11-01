@@ -9,7 +9,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 import com.rentals.api.Exceptions.DuplicateUserException;
@@ -24,75 +23,73 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class ExceptionsHandler {
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ApiResponse(responseCode = "500", description = "Global Exception handler", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDto.class)))
-    public ResponseEntity<Object> handleGlobalException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleGlobalException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(io.jsonwebtoken.JwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ApiResponse(responseCode = "401", description = "Unauthorized - The bearer token is not valid or is expired.", content = @Content())
-    public ResponseEntity<Object> handleJwtException(Exception e, WebRequest request) {
-        return new ResponseEntity<Object>(
+    public ResponseEntity<ExceptionDto> handleJwtException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto("invalid token", e.getClass().toString()),
                 HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(jakarta.validation.ValidationException.class)
-    public ResponseEntity<Object> handleConstraintViolation(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleConstraintViolation(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Object> handleDataIntegrityViolationException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleDataIntegrityViolationException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleResourceNotFoundException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleResourceNotFoundException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleMethodArgumentNotValidException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateUserException.class)
-    public ResponseEntity<Object> handleDuplicateUserException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleDuplicateUserException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handleAuthenticationException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleAuthenticationException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto("Bad credentials", e.getClass().getName()),
                 HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleAccessDeniedException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleHttpMessageNotReadableException(Exception e, WebRequest request) {
-        return new ResponseEntity<>(
+    public ResponseEntity<ExceptionDto> handleHttpMessageNotReadableException(Exception e, WebRequest request) {
+        return new ResponseEntity<ExceptionDto>(
                 new ExceptionDto(e),
                 HttpStatus.BAD_REQUEST);
     }
