@@ -92,28 +92,16 @@ public class AuthController {
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> me() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-
-            if (principal instanceof User) {
-                User user = (User) principal;
-
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(new UserDto(
-                                user.getId(),
-                                user.getName(),
-                                user.getEmail(),
-                                user.getCreated_at().toString(),
-                                user.getUpdated_at().toString()));
-            }
-        }
+        User user = userservice.getCurrentUser();
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Authentication is required to access this endpoint.");
+                .status(HttpStatus.OK)
+                .body(new UserDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getCreated_at().toString(),
+                        user.getUpdated_at().toString()));
     }
 
     @Operation(summary = "Retreive an user from his unique id")
