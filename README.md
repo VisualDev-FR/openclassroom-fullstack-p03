@@ -15,24 +15,25 @@ It is designed to provide datas to an Angular web application which is available
 
 ## Setup
 
-1. setup your secret key in env variable `${RENTAL_SECRET_KEY}`
-
 1. Clone the repository.
-2. Install dependencies with Maven:
+
+2. setup your secret key in env variable `${RENTAL_SECRET_KEY}`
+
+3. Install dependencies with Maven:
 
 ```bash
 mvn install
 ```
 
-3. Create an empty database in MySQL, and grant a user the necessary rights to access and use that database.
+4. Create an empty database in MySQL, and grant a user the necessary rights to access and use that database.
 
-4. Configure the following env variables:
+5. Configure the following env variables:
 
 * `${RENTAL_DB_NAME}`: the name of the configured database
 * `${RENTAL_DB_USERNAME}`: the username of the created database user
 * `${RENTAL_DB_PASSWORD}`: the password of the created database user
 
-5. Initialize the database using Spring JPA by running the local server:
+6. Initialize the database using Spring JPA by running the local server:
 
 ```bash
 mvn spring-boot:run
